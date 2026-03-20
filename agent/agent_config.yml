@@ -1,0 +1,108 @@
+# GitLab Duo Custom Agent Configuration
+# PR Review Buddy — Automated MR Code Review Agent
+# Docs: https://docs.gitlab.com/ee/user/gitlab_duo/custom_agents/
+
+name: pr-review-buddy
+description: >
+  An AI-powered Merge Request code reviewer that automatically analyzes diffs
+  for security vulnerabilities, bugs, missing error handling, and performance
+  issues. Posts structured inline comments and a summary recommendation.
+
+version: "1.0.0"
+
+# ─────────────────────────────────────────────
+# Model Configuration
+# ─────────────────────────────────────────────
+model:
+  # Uses GitLab's default Claude model via Duo AI Gateway
+  provider: gitlab_duo
+  name: claude-3-5-sonnet  # GitLab Duo default; override with claude-3-opus if available
+  parameters:
+    temperature: 0.2        # Low temperature for deterministic, precise reviews
+    max_tokens: 8192        # Sufficient for large diffs + full review output
+    top_p: 0.9
+
+# ─────────────────────────────────────────────
+# System Prompt
+# ─────────────────────────────────────────────
+system_prompt:
+  file: system_prompt.md   # Path relative to this config file
+
+# ─────────────────────────────────────────────
+# Tools Available to the Agent
+# ─────────────────────────────────────────────
+tools:
+  - name: read_merge_request
+    description: >
+      Reads the full Merge Request metadata including title, description,
+      author, source branch, target branch, and diff statistics.
+    inputs:
+      - project_id: string   # GitLab project ID (numeric or namespace/repo)
+      - mr_iid: integer      # Merge Request internal ID (not global ID)
+
+  - name: list_changed_files
+    description: >
+      Returns a list of all files changed in the Merge Request, including
+      their change type (added, modified, deleted, renamed).
+    inputs:
+      - project_id: string
+      - mr_iid: integer
+
+  - name: read_file
+    description: >
+      Reads the full content of a specific file from the source branch of the
+      MR. Useful for understanding context beyond the diff.
+    inputs:
+      - project_id: string
+      - file_path: string    # Path within the repository
+      - ref: string          # Branch or commit SHA (use MR source branch)
+
+  - name: post_inline_comment
+    description: >
+      Posts an inline review comment on a specific line of a changed file
+      within the Merge Request diff.
+    inputs:
+      - project_id: string
+      - mr_iid: integer
+      - file_path: string    # File the comment is attached to
+      - line_number: integer # Line number in the new (right-hand) version of the file
+      - body: string         # The markdown-formatted comment body
+
+  - name: post_merge_request_comment
+    description: >
+      Posts a general (non-inline) comment on the Merge Request. Used for
+      posting the overall review summary.
+    inputs:
+      - project_id: string
+      - mr_iid: integer
+      - body: string         # The markdown-formatted comment body
+
+# ─────────────────────────────────────────────
+# Execution Settings
+# ─────────────────────────────────────────────
+execution:
+  timeout_seconds: 120        # Max time the agent may run per trigger
+  max_inline_comments: 20     # Safety cap; agent prompt also enforces this
+  retry_on_failure: true
+  max_retries: 2
+
+# ─────────────────────────────────────────────
+# Permissions Required
+# ─────────────────────────────────────────────
+permissions:
+  - read_repository           # To read file contents via read_file
+  - read_merge_requests       # To fetch MR metadata and diff
+  - write_merge_requests       # To post inline and general comments
+
+# ─────────────────────────────────────────────
+# Metadata
+# ─────────────────────────────────────────────
+metadata:
+  owner: mr-ahtashamulhaq
+  team:
+    - name: Ahtasham Ul Haq
+      role: AI / Frontend Lead
+    - name: Agrika
+      role: Backend / GitLab Integration Lead
+  hackathon: GitLab AI Hackathon 2026
+  repository: https://gitlab.com/mr-ahtashamulhaq/pr-review-buddy
