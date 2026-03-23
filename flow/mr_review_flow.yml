@@ -1,109 +1,31 @@
-# GitLab Duo Custom Flow Configuration
-# PR Review Buddy — MR Review Flow
-# Docs: https://docs.gitlab.com/ee/user/gitlab_duo/custom_flows/
-
 name: mr-review-flow
 description: >
-  Automatically triggers the PR Review Buddy agent whenever a Merge Request
-  is opened or updated with new commits. Feeds the agent the full diff,
-  MR title, description, and list of changed files.
+  Triggers PR Review Buddy automatically when a Merge Request is opened
+  or updated with new commits. Passes the full diff and MR context to
+  the agent for review.
+version: "1.0"
 
-version: "1.0.0"
+trigger:
+  events:
+    - merge_request:opened
+    - merge_request:pushed
 
-# ─────────────────────────────────────────────
-# Trigger Configuration
-# ─────────────────────────────────────────────
-triggers:
-  - event: merge_request:opened
-    description: Trigger when a new MR is created for the first time
-
-  - event: merge_request:push
-    description: Trigger when new commits are pushed to an open MR's source branch
-
-# ─────────────────────────────────────────────
-# Filter (Optional)
-# ─────────────────────────────────────────────
-filters:
-  # Only run on MRs targeting specific branches (leave empty to run on all)
-  target_branches:
-    - main
-    - master
-    - develop
-    - staging
-
-  # Skip draft / WIP merge requests
-  skip_draft: true
-
-  # Skip MRs with the "skip-ai-review" label
-  skip_labels:
-    - skip-ai-review
-    - wip
-    - no-review
-
-# ─────────────────────────────────────────────
-# Agent to Run
-# ─────────────────────────────────────────────
-agent:
-  name: pr-review-buddy
-  config: ../agent/agent_config.yml   # Path relative to this flow file
-
-# ─────────────────────────────────────────────
-# Context Passed to the Agent
-# ─────────────────────────────────────────────
-context:
-  # MR metadata
-  - key: mr_title
-    source: merge_request.title
-
-  - key: mr_description
-    source: merge_request.description
-
-  - key: mr_author
-    source: merge_request.author.username
-
-  - key: source_branch
-    source: merge_request.source_branch
-
-  - key: target_branch
-    source: merge_request.target_branch
-
-  - key: mr_iid
-    source: merge_request.iid
-
-  - key: project_id
-    source: project.id
-
-  # Full unified diff of all changed files
-  - key: diff
-    source: merge_request.diff
-    format: unified_diff          # Standard unified diff format
-
-  # List of changed files with their change types
-  - key: changed_files
-    source: merge_request.changed_files
-
-# ─────────────────────────────────────────────
-# Post-Run Actions
-# ─────────────────────────────────────────────
-on_complete:
-  # Label the MR to indicate the AI review was completed
-  - action: add_label
-    label: ai-reviewed
-
-on_failure:
-  # If the agent fails, add a label so the team knows to review manually
-  - action: add_label
-    label: ai-review-failed
-  - action: post_comment
-    body: |
-      ⚠️ **PR Review Buddy** encountered an error and could not complete 
-      the automated review. Please review this MR manually.
-      
-      *If this keeps happening, check the agent logs or contact the AI team.*
-
-# ─────────────────────────────────────────────
-# Execution Settings
-# ─────────────────────────────────────────────
-execution:
-  timeout_seconds: 180       # Flow-level timeout (must exceed agent timeout)
-  run_mode: async            # Don't block the MR pipeline; run in background
+steps:
+  - name: review-merge-request
+    agent: pr-review-buddy
+    input:
+      context:
+        - merge_request.diff
+        - merge_request.title
+        - merge_request.description
+        - merge_request.target_branch
+        - merge_request.source_branch
+      instruction: |
+        A new Merge Request has been opened or updated.
+        Review the provided code diff thoroughly.
+        For every issue you find, post an inline comment on the exact 
+        file and line with severity, explanation, and a concrete fix.
+        After all inline comments, post one final summary comment with 
+        your overall recommendation: APPROVE, REQUEST CHANGES, or 
+        NEEDS DISCUSSION.
+        Be direct. Be specific. Every comment must include a fix.
