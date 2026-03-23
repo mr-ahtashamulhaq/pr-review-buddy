@@ -7,8 +7,9 @@ const MR_REVIEWS = [
     repo: "backend-core-service",
     status: "Changes Requested",
     issuesCount: 6,
-    severity: "2 Critical · 3 High · 1 Medium",
-    timeAgo: "2 minutes ago",
+    severity: { crit: 2, high: 3, med: 1 },
+    timeAgo: "14:02:45 UTC",
+    hash: "a4f9b2c",
   },
   {
     id: 2,
@@ -16,8 +17,9 @@ const MR_REVIEWS = [
     repo: "billing-system",
     status: "Approved",
     issuesCount: 1,
-    severity: "0 Critical · 0 High · 1 Low",
-    timeAgo: "15 minutes ago",
+    severity: { low: 1 },
+    timeAgo: "13:45:12 UTC",
+    hash: "c9d1e4a",
   },
   {
     id: 3,
@@ -25,8 +27,9 @@ const MR_REVIEWS = [
     repo: "web-frontend",
     status: "Approved",
     issuesCount: 0,
-    severity: "No issues",
-    timeAgo: "1 hour ago",
+    severity: null,
+    timeAgo: "12:15:00 UTC",
+    hash: "b7h8i2o",
   },
   {
     id: 4,
@@ -34,113 +37,159 @@ const MR_REVIEWS = [
     repo: "auth-gateway",
     status: "Changes Requested",
     issuesCount: 3,
-    severity: "1 Critical · 2 Medium",
-    timeAgo: "3 hours ago",
+    severity: { crit: 1, med: 2 },
+    timeAgo: "10:30:00 UTC",
+    hash: "e3j4k5l",
   }
 ];
 
 function App() {
   return (
-    <div className="min-h-screen bg-[#0f0f1a] text-white font-sans selection:bg-purple-500/30">
+    <div className="min-h-screen bg-[#050505] text-[#e5e5e5] font-sans selection:bg-[#333] selection:text-white pb-20">
       
-      {/* Navigation */}
-      <nav className="border-b border-purple-500/20 bg-[#151525]/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">🤖</span>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent tracking-tight">
-                PR Review Buddy
-              </h1>
-            </div>
-            <div className="hidden md:block h-5 w-px bg-purple-500/20"></div>
-            <p className="hidden md:block text-sm text-indigo-200/70 font-medium">
-              AI-powered code reviews for every Merge Request
-            </p>
+      {/* Header - Minimal, Terminal Inspired */}
+      <header className="border-b border-zinc-800 bg-[#050505] sticky top-0 z-50">
+        <div className="max-w-[1400px] mx-auto px-6 h-12 flex items-center justify-between text-xs font-mono tracking-tight text-zinc-400">
+          <div className="flex items-center gap-6">
+            <span className="text-zinc-100 font-semibold uppercase tracking-widest">PR_REVIEW_BUDDY</span>
+            <span className="hidden sm:inline-block text-zinc-600">/</span>
+            <span className="hidden sm:inline-block">system_status: active</span>
+            <span className="hidden sm:inline-block text-zinc-600">/</span>
+            <span className="hidden sm:inline-block">version: 1.0.0</span>
           </div>
-          <div className="flex items-center">
-            <span className="inline-flex flex-row items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.3)]">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse border border-emerald-300"></span>
-              Agent Active
-            </span>
+          <div className="flex items-center gap-2 border border-zinc-700/50 bg-zinc-900/50 px-2 py-0.5">
+            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-none animate-pulse"></div>
+            <span className="text-zinc-300">LISTENING_FOR_HOOKS</span>
           </div>
         </div>
-      </nav>
+      </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      {/* Main Layout - Asymmetric */}
+      <main className="max-w-[1400px] mx-auto px-6 py-12 flex flex-col lg:flex-row gap-12 lg:gap-24">
         
-        {/* Stats Row */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-[#1a1a2e] rounded-xl border border-indigo-500/20 p-6 shadow-[0_0_40px_rgba(79,70,229,0.05)] relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <h3 className="text-indigo-200/60 text-xs font-bold uppercase tracking-[0.2em] mb-3">Total Reviews</h3>
-            <p className="text-5xl font-light text-white tracking-tight">24</p>
+        {/* Left Column: Data Density & Stats */}
+        <aside className="lg:w-1/4 flex flex-col gap-8 shrink-0">
+          
+          <div className="flex flex-col gap-1">
+            <h1 className="text-3xl font-medium tracking-tight text-white mb-4">Review Feed</h1>
+            <p className="text-sm text-zinc-400 leading-relaxed font-sans mt-2">
+              Autonomous PR inspection logs. Data points indicate parsed abstract syntax trees and static analysis output from recent MRs.
+            </p>
           </div>
-          <div className="bg-[#1a1a2e] rounded-xl border border-purple-500/20 p-6 shadow-[0_0_40px_rgba(168,85,247,0.05)] relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <h3 className="text-purple-200/60 text-xs font-bold uppercase tracking-[0.2em] mb-3">Issues Caught</h3>
-            <p className="text-5xl font-light text-white tracking-tight">87</p>
-          </div>
-          <div className="bg-[#1a1a2e] rounded-xl border border-blue-500/20 p-6 shadow-[0_0_40px_rgba(59,130,246,0.05)] relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <h3 className="text-blue-200/60 text-xs font-bold uppercase tracking-[0.2em] mb-3">Avg Review Time</h3>
-            <p className="text-5xl font-light text-white tracking-tight">12s</p>
-          </div>
-        </section>
 
-        {/* Activity Feed */}
-        <section>
-          <div className="flex items-center justify-between mb-6 pt-4 border-t border-indigo-500/10">
-            <h2 className="text-xl flex items-center gap-2 font-medium text-white/90">
-              Recent Activity
-            </h2>
+          <div className="h-px w-full bg-zinc-800 my-4"></div>
+
+          {/* Stats: Vertical, brutal layout */}
+          <div className="flex flex-col gap-6">
+            <div className="flex justify-between items-baseline border-b border-zinc-800/50 pb-2">
+              <span className="text-xs uppercase font-mono text-zinc-500">Total_Processed</span>
+              <span className="text-2xl font-medium tracking-tighter">24</span>
+            </div>
+            
+            <div className="flex justify-between items-baseline border-b border-zinc-800/50 pb-2">
+              <span className="text-xs uppercase font-mono text-zinc-500">Anomalies</span>
+              <span className="text-2xl font-medium tracking-tighter text-zinc-100">87</span>
+            </div>
+
+            <div className="flex justify-between items-baseline border-b border-zinc-800/50 pb-2">
+              <span className="text-xs uppercase font-mono text-zinc-500">Latency_Avg</span>
+              <span className="text-2xl font-medium tracking-tighter text-zinc-400">12<span className="text-sm">s</span></span>
+            </div>
           </div>
-          <div className="space-y-4">
-            {MR_REVIEWS.map((mr) => (
-              <div key={mr.id} className="bg-[#151525] rounded-xl border border-white/5 p-5 hover:border-purple-500/30 transition-colors shadow-sm cursor-default hover:shadow-[0_0_30px_rgba(168,85,247,0.1)] group flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          
+        </aside>
+
+        {/* Right Column: Feed log */}
+        <section className="flex-1 flex flex-col pt-2 border-t border-zinc-800 lg:border-t-0">
+          
+          {/* Table Header Row */}
+          <div className="hidden sm:grid grid-cols-12 gap-4 pb-4 border-b border-zinc-800 text-xs font-mono text-zinc-500 uppercase">
+            <div className="col-span-2">Timestamp</div>
+            <div className="col-span-5">Target / Subject</div>
+            <div className="col-span-3">Diagnostics</div>
+            <div className="col-span-2 text-right">Verdict</div>
+          </div>
+
+          {/* Feed Items */}
+          <div className="flex flex-col relative">
+            {MR_REVIEWS.map((mr, i) => (
+              <div key={mr.id} className="grid sm:grid-cols-12 gap-y-4 gap-x-4 py-8 border-b border-zinc-900 hover:bg-zinc-900/10 transition-colors group">
                 
-                <div className="space-y-3 flex-1">
-                  <div className="flex items-center gap-3">
-                    <h3 className="font-semibold text-indigo-50 text-base lg:text-lg tracking-tight group-hover:text-purple-300 transition-colors">{mr.title}</h3>
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs leading-4 font-bold uppercase tracking-wider border ${mr.status === 'Approved' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]' : 'bg-rose-500/10 text-rose-400 border-rose-500/20 shadow-[0_0_10px_rgba(244,63,94,0.1)]'}`}>
-                      {mr.status}
-                    </span>
-                  </div>
-                  
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-indigo-200/60">
-                    <div className="flex items-center gap-1.5 font-medium">
-                      <svg className="w-4 h-4 text-indigo-400/70" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
-                      {mr.repo}
-                    </div>
-                    {mr.issuesCount > 0 ? (
-                      <div className="flex items-center gap-1.5 text-rose-300/90 font-medium">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                        {mr.issuesCount} issues found
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-1.5 text-emerald-300/90 font-medium">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-                        0 issues found
-                      </div>
-                    )}
-                    <span className="text-white/20 hidden sm:inline">•</span>
-                    <div className="font-mono text-xs text-indigo-300/50 bg-indigo-500/5 px-2 py-0.5 rounded backdrop-blur">
-                      {mr.severity}
-                    </div>
+                {/* Time & Hash */}
+                <div className="sm:col-span-2 flex flex-row sm:flex-col justify-between sm:justify-start">
+                  <span className="text-xs font-mono text-zinc-500">{mr.timeAgo}</span>
+                  <span className="text-xs font-mono text-zinc-700 bg-zinc-900/50 px-1 py-0.5 inline-block w-max mt-1 border border-zinc-800">#{mr.hash}</span>
+                </div>
+
+                {/* PR Meta */}
+                <div className="sm:col-span-5 flex flex-col gap-1.5 pr-4">
+                  <div className="text-xs font-mono text-zinc-400">{mr.repo}</div>
+                  <h3 className="text-lg font-medium tracking-tight text-white/90 leading-snug group-hover:text-white transition-colors">
+                    {mr.title}
+                  </h3>
+                  <div className="pt-2">
+                    <button className="text-xs font-sans text-zinc-400 hover:text-white border-b border-zinc-700 hover:border-zinc-300 transition-colors pb-0.5">
+                      Explore analysis →
+                    </button>
                   </div>
                 </div>
 
-                <div className="flex flex-row items-center justify-between sm:flex-col sm:items-end gap-3 sm:w-36 shrink-0">
-                  <span className="text-xs text-indigo-200/40 uppercase tracking-widest">{mr.timeAgo}</span>
-                  <button className="px-4 py-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 text-sm font-semibold tracking-wide rounded-lg border border-indigo-500/20 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500/40 hover:text-white hover:border-indigo-400/40 w-full sm:w-auto text-center group-hover:bg-indigo-500/20 shadow-md">
-                    View Review
-                  </button>
+                {/* Diagnostics */}
+                <div className="sm:col-span-3 flex flex-col gap-2 pt-1 sm:pt-0">
+                  <span className="text-xs font-mono text-zinc-500 uppercase">Events_Found: <span className="text-zinc-200">{mr.issuesCount}</span></span>
+                  
+                  {mr.issuesCount > 0 && (
+                    <div className="flex flex-col gap-1 text-[11px] font-mono w-full max-w-[140px]">
+                      {mr.severity.crit && (
+                        <div className="flex justify-between w-full border-l-[1.5px] border-red-500/50 pl-2">
+                          <span className="text-zinc-400">CRITICAL</span>
+                          <span className="text-red-400">{mr.severity.crit}</span>
+                        </div>
+                      )}
+                      {mr.severity.high && (
+                        <div className="flex justify-between w-full border-l-[1.5px] border-orange-500/50 pl-2">
+                          <span className="text-zinc-400">HIGH</span>
+                          <span className="text-orange-400">{mr.severity.high}</span>
+                        </div>
+                      )}
+                      {mr.severity.med && (
+                        <div className="flex justify-between w-full border-l-[1.5px] border-yellow-500/50 pl-2">
+                          <span className="text-zinc-400">MEDIUM</span>
+                          <span className="text-yellow-400">{mr.severity.med}</span>
+                        </div>
+                      )}
+                      {mr.severity.low && (
+                        <div className="flex justify-between w-full border-l-[1.5px] border-zinc-500/50 pl-2">
+                          <span className="text-zinc-400">LOW</span>
+                          <span className="text-zinc-300">{mr.severity.low}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {mr.issuesCount === 0 && (
+                    <div className="text-[11px] font-mono border-l-[1.5px] border-zinc-700 pl-2 text-zinc-500">
+                      NULL
+                    </div>
+                  )}
+                </div>
+
+                {/* Status Column */}
+                <div className="sm:col-span-2 sm:text-right mt-2 sm:mt-0 flex">
+                  {mr.status === 'Approved' ? (
+                    <span className="ml-auto text-xs font-mono tracking-widest text-emerald-400/80 uppercase">
+                      Pass
+                    </span>
+                  ) : (
+                    <span className="ml-auto text-xs font-mono tracking-widest text-red-500/80 uppercase">
+                      Inspect
+                    </span>
+                  )}
                 </div>
 
               </div>
             ))}
           </div>
+          
         </section>
 
       </main>
