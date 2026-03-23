@@ -1,0 +1,47 @@
+name: "MR Review Flow"
+description: "Automatically reviews Merge Requests when opened or updated."
+public: true
+definition:
+  version: v1
+  environment: ambient
+
+  components:
+    - name: "pr_review_agent"
+      type: AgentComponent
+      prompt_id: "pr_review_prompt"
+      inputs:
+        - "context:goal"
+      toolset:
+        - "get_merge_request_changes"
+        - "create_merge_request_comment"
+        - "read_file"
+        - "read_files"
+      ui_log_events:
+        - on_agent_final_answer
+        - on_tool_execution_success
+
+  prompts:
+    - prompt_id: "pr_review_prompt"
+      name: "PR Review Buddy Prompt"
+      prompt_template:
+        system: |
+          You are PR Review Buddy, a senior software engineer performing
+          automated code reviews on GitLab Merge Requests. Review the
+          provided code diff and post structured inline comments for every
+          issue found — bugs, security problems, missing error handling,
+          and code quality issues. For each issue include severity, file,
+          line number, explanation, and a concrete fix. End with a summary
+          comment with overall recommendation.
+        user: |
+          {{goal}}
+        placeholder: history
+      unit_primitives: []
+      params:
+        timeout: 180
+
+  routers:
+    - from: "pr_review_agent"
+      to: "end"
+
+  flow:
+    entry_point: "pr_review_agent"
