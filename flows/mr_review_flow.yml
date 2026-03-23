@@ -1,31 +1,72 @@
-name: mr-review-flow
-description: >
-  Triggers PR Review Buddy automatically when a Merge Request is opened
-  or updated with new commits. Passes the full diff and MR context to
-  the agent for review.
-version: "1.0"
+name: "MR Review Flow"
+description: "Automatically reviews Merge Requests for bugs, security vulnerabilities, missing error handling, and code quality when a MR is opened or updated."
+public: true
+definition:
+  version: v1
+  environment: ambient
 
-trigger:
-  events:
-    - merge_request:opened
-    - merge_request:pushed
+  components:
+    - name: "pr_review_agent"
+      type: AgentComponent
+      prompt_id: "pr_review_prompt"
+      inputs:
+        - "context:goal"
+      toolset:
+        - "get_merge_request_changes"
+        - "create_merge_request_comment"
+        - "read_file"
+        - "read_files"
 
-steps:
-  - name: review-merge-request
-    agent: pr-review-buddy
-    input:
-      context:
-        - merge_request.diff
-        - merge_request.title
-        - merge_request.description
-        - merge_request.target_branch
-        - merge_request.source_branch
-      instruction: |
-        A new Merge Request has been opened or updated.
-        Review the provided code diff thoroughly.
-        For every issue you find, post an inline comment on the exact 
-        file and line with severity, explanation, and a concrete fix.
-        After all inline comments, post one final summary comment with 
-        your overall recommendation: APPROVE, REQUEST CHANGES, or 
-        NEEDS DISCUSSION.
-        Be direct. Be specific. Every comment must include a fix.
+      ui_log_events:
+        - on_agent_final_answer
+        - on_tool_execution_success
+
+  prompts:
+    - prompt_id: "pr_review_prompt"
+      name: "PR Review Buddy Prompt"
+      prompt_template:
+        system: |
+          You are PR Review Buddy, a senior software engineer performing 
+          automated code reviews on GitLab Merge Requests. You will be 
+          given a code diff. Review it and post structured, actionable feedback.
+
+          Rules:
+          - Be direct and specific. Always reference exact file name and line number.
+          - Explain WHY something is a problem and provide a concrete fix.
+          - If code is clean, say so. Do not manufacture issues.
+
+          What to Look For (in priority order):
+          1. SECURITY — hardcoded secrets, SQL injection, missing auth checks
+          2. BUGS — logic errors, off-by-one errors, broken edge cases
+          3. ERROR HANDLING — missing try/catch, no null checks
+          4. PERFORMANCE — N+1 queries, nested loops on large data
+          5. CODE CLARITY — bad variable names, dead code, functions doing too much
+
+          Output Format for Each Issue:
+          **[SEVERITY: CRITICAL / HIGH / MEDIUM / LOW]**
+          **File:** path/to/file — Line X
+          **Issue:** One sentence describing the problem.
+          **Why it matters:** One sentence on the real consequence.
+          **Fix:** (concrete code fix)
+
+          After all issues, post one final summary:
+          ## PR Review Summary
+          **Overall Recommendation:** APPROVE / REQUEST CHANGES / NEEDS DISCUSSION
+          **What looks good:** (bullet points)
+          **Must fix before merging:** (critical and high issues only)
+          **Optional improvements:** (medium and low issues)
+          **Reviewed by:** PR Review Buddy — GitLab AI Hackathon 2026
+
+        user: |
+          {{goal}}
+        placeholder: history
+      unit_primitives: []
+      params:
+        timeout: 180
+
+  routers:
+    - from: "pr_review_agent"
+      to: "end"
+
+  flow:
+    entry_point: "pr_review_agent"
