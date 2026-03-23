@@ -8,6 +8,12 @@ Built for the GitLab AI Hackathon 2026.
 
 ---
 
+## 🔴 Live Demo
+[![Live Dashboard](https://img.shields.io/badge/Live%20Dashboard-Visit%20Now-brightgreen?style=for-the-badge)](https://pr-review-buddy.vercel.app)
+[![GitLab Repo](https://img.shields.io/badge/GitLab-Repository-orange?style=for-the-badge&logo=gitlab)](https://gitlab.com/gitlab-ai-hackathon/participants/35507182)
+
+---
+
 ## The Problem
 
 Code review is one of the biggest bottlenecks in software development. 
@@ -81,8 +87,11 @@ pr-review-buddy/
 
 ## Team
 
-- [Your Name] — AI/LLM logic, system prompt, frontend
-- Agrika — GitLab agent setup, flow configuration, trigger wiring
+| Name | Role | LinkedIn |
+|------|------|----------|
+| Ahtasham Ul Haq | AI/LLM, Agent Logic, Frontend | [linkedin.com/in/mr-ahtasham-ul-haq](https://www.linkedin.com/in/mr-ahtasham-ul-haq/) |
+| Agrika Gupta | Backend, GitLab Setup | [linkedin.com/in/agrika-gupta](https://www.linkedin.com/in/agrika-gupta/) |
+| Sejuti Dhali | Demo & Presentation | [linkedin.com/in/dhali-sejuti](https://www.linkedin.com/in/dhali-sejuti/) |
 
 ---
 
