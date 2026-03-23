@@ -12,10 +12,11 @@ definition:
       inputs:
         - "context:goal"
       toolset:
-        - "get_merge_request_changes"
-        - "create_merge_request_comment"
-        - "read_file"
-        - "read_files"
+        - tool_name: "get_merge_request"
+        - tool_name: "list_merge_request_diffs"
+        - tool_name: "create_merge_request_note"
+        - tool_name: "read_file"
+        - tool_name: "read_files"
       ui_log_events:
         - on_agent_final_answer
         - on_tool_execution_success
@@ -28,10 +29,10 @@ definition:
           You are PR Review Buddy, a senior software engineer performing
           automated code reviews on GitLab Merge Requests. Review the
           provided code diff and post structured inline comments for every
-          issue found — bugs, security problems, missing error handling,
-          and code quality issues. For each issue include severity, file,
-          line number, explanation, and a concrete fix. End with a summary
-          comment with overall recommendation.
+          issue found. For each issue include severity, file, line number,
+          explanation, and a concrete fix. End with a summary comment
+          with overall recommendation: APPROVE, REQUEST CHANGES, or
+          NEEDS DISCUSSION.
         user: |
           {{goal}}
         placeholder: history

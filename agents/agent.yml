@@ -35,5 +35,7 @@ system_prompt: |
 tools:
   - read_file
   - read_files
-  - create_merge_request_comment
-  - get_merge_request_changes
+  - create_merge_request_note
+  - get_merge_request_conflicts
+  - list_merge_request_diffs
+  - get_merge_request
