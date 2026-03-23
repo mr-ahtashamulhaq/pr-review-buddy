@@ -1,2 +1,5 @@
 .agents/
-node_modules/
+frontend/node_modules/
+.env
+frontend/.env
+frontend/dist/
