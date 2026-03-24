@@ -1,87 +1,135 @@
 # PR Review Buddy
 
-An AI agent built on the GitLab Duo Agent Platform that automatically reviews 
-Merge Requests the moment they are opened — catching bugs, security issues, 
-and missing error handling before a human even looks at it.
+An AI-powered code review agent that analyzes pull/merge requests instantly and delivers structured, line-level feedback within seconds.
 
-Built for the GitLab AI Hackathon 2026.
+Built during **LovHack Season 2** to eliminate review delays and improve code quality using automated intelligence.
 
 ---
 
-## 🔴 Live Demo
-[![Live Dashboard](https://img.shields.io/badge/Live%20Dashboard-Visit%20Now-brightgreen?style=for-the-badge)](https://pr-review-buddy.vercel.app)
-[![GitLab Repo](https://img.shields.io/badge/GitLab-Repository-orange?style=for-the-badge&logo=gitlab)](https://gitlab.com/gitlab-ai-hackathon/participants/35507182)
+## Live Demo
+
+* Dashboard: [https://pr-review-buddy.vercel.app](https://pr-review-buddy.vercel.app)
+* Repository: [https://gitlab.com/gitlab-ai-hackathon/participants/35507182](https://github.com/mr-ahtashamulhaq/pr-review-buddy)
 
 ---
 
-## The Problem
+## Problem
 
-Code review is one of the biggest bottlenecks in software development. 
-Developers wait hours or days for feedback. Reviewers are busy, inconsistent, 
-and often miss security issues under time pressure. Junior developers get 
-blocked the most.
+Code review slows down development more than most teams admit.
 
-## The Solution
+Developers wait hours or days for feedback. Reviewers are overloaded and often miss critical issues under time pressure. Security flaws, edge cases, and poor error handling slip through. Junior developers get blocked without guidance.
 
-PR Review Buddy triggers automatically when any Merge Request is opened. 
-It reads the diff, analyzes it using Claude via GitLab Duo, and posts 
-structured inline comments — just like a senior engineer would, in under 15 seconds.
+The result:
+
+* Slower iteration cycles
+* Inconsistent code quality
+* Preventable bugs reaching production
 
 ---
 
-## What It Reviews
+## Solution
 
-- Security vulnerabilities (hardcoded secrets, SQL injection, missing auth)
-- Bugs and logic errors
-- Missing error handling
-- Performance issues
-- Code clarity problems
+PR Review Buddy runs automatically the moment a merge request is opened.
+
+It reads the code changes, analyzes them using an AI model, and posts precise inline feedback directly on the diff. The feedback covers bugs, security risks, performance concerns, and code clarity.
+
+What this really means is:
+developers get actionable review feedback in seconds instead of waiting on human availability.
+
+---
+
+## Key Features
+
+* **Automatic Trigger**
+  Runs on every merge request without manual input
+
+* **Line-Level Feedback**
+  Comments are attached to exact lines, not generic summaries
+
+* **Security Analysis**
+  Detects hardcoded secrets, injection risks, and missing validation
+
+* **Bug Detection**
+  Flags logical errors and risky patterns
+
+* **Error Handling Checks**
+  Identifies missing try/catch and failure paths
+
+* **Performance Insights**
+  Highlights inefficient code patterns
+
+* **Summary Recommendation**
+  Provides an overall review verdict
 
 ---
 
 ## How It Works
 
-MR Opened by Developer
-        ↓
-GitLab Trigger fires (merge_request:opened)
-        ↓
-Custom Flow (mr_review_flow.yml) starts
-        ↓
-PR Review Buddy Agent reads the MR diff
-        ↓
-Claude analyzes the code changes
-        ↓
-Inline comments posted on specific lines
-        ↓
-Summary comment added with overall recommendation
-
----
-
-## Project Structure
-
-pr-review-buddy/
-├── agent/
-│   ├── system_prompt.md        # Claude agent instructions
-│   └── agent_config.yml        # GitLab Custom Agent config
-├── flow/
-│   └── mr_review_flow.yml      # Custom Flow with MR trigger
-├── .gitlab/
-│   └── AGENTS.md               # Agent behavior customization
-├── frontend/
-│   └── src/                    # Dashboard UI (React + Tailwind)
-├── docs/
-│   └── setup.md                # Installation guide
-├── README.md
-└── LICENSE
+Developer opens a Merge Request
+↓
+Event trigger activates the review flow
+↓
+AI agent reads the code diff
+↓
+Model analyzes changes for issues and improvements
+↓
+Inline comments are posted on specific lines
+↓
+A summary review is added to the request
 
 ---
 
 ## Tech Stack
 
-- GitLab Duo Agent Platform — Custom Agent + Custom Flow
-- Anthropic Claude — LLM backbone (provided by GitLab, no API key needed)
-- React + Tailwind CSS + Vite — Frontend dashboard
-- GitLab CI/CD Triggers — Event-driven automation
+* GitLab Duo Agent Platform — custom agent and event-driven workflows
+* Anthropic Claude — code analysis and reasoning
+* React + Tailwind CSS + Vite — frontend dashboard
+* GitLab CI/CD — trigger-based automation
+
+---
+
+## Use Cases
+
+* Teams that want faster review cycles
+* Startups with limited engineering bandwidth
+* Junior developers who need immediate guidance
+* Projects where security and reliability matter
+
+---
+
+## Why This Matters
+
+Code review is a human bottleneck in an otherwise automated pipeline.
+
+PR Review Buddy shifts review from:
+
+* delayed → instant
+* inconsistent → structured
+* manual → automated
+
+It does not replace human reviewers. It makes them faster and more effective by handling the first pass automatically.
+
+---
+
+## What Was Built During LovHack
+
+During the hackathon, the system was implemented end-to-end as a working prototype:
+
+* Event-driven review pipeline
+* AI-powered analysis flow
+* Inline commenting system
+* Functional frontend dashboard
+
+The result is a fully working product that demonstrates real-world usability.
+
+---
+
+## Future Improvements
+
+* Multi-platform support (GitHub, Bitbucket)
+* Custom review rules per team
+* Learning from past review patterns
+* Deeper security scanning integrations
 
 ---
 
