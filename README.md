@@ -9,7 +9,7 @@ Built during **LovHack Season 2** to eliminate review delays and improve code qu
 ## Live Demo
 
 * Dashboard: [https://pr-review-buddy.vercel.app](https://pr-review-buddy.vercel.app)
-* Repository: [https://gitlab.com/gitlab-ai-hackathon/participants/35507182](https://github.com/mr-ahtashamulhaq/pr-review-buddy)
+* Repository: [Github-Repo](https://github.com/mr-ahtashamulhaq/pr-review-buddy)
 
 ---
 
